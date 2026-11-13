@@ -1,0 +1,12 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>OffDesktop</title>
+<style>
+body{margin:0;background:#0B0B0B;color:#fff;font-family:Segoe UI,system-ui,sans-serif;padding:28px;text-align:center}
+h1{color:#FFD400;font-size:22px;margin:0 0 6px}p{color:#8A8A8A;font-size:14px;margin:0 0 18px}
+.box{background:#1A1A1A;border-radius:12px;padding:14px;margin-bottom:12px}
+.pin{font-size:36px;letter-spacing:8px;color:#FFD400;font-weight:600}.url{font-size:16px}
+</style>
+<h1>OffDesktop</h1><p>No celular, abra o endereço abaixo (mesmo Wi-Fi) e digite o código.</p>
+<div class="box"><p style="margin:0 0 4px">Endereço</p><div class="url" id="u">...</div></div>
+<div class="box"><p style="margin:0 0 4px">Código</p><div class="pin" id="p">------</div></div>
+<p>O app continua na bandeja do sistema após fechar esta janela.</p>
+<script>off.getInfo().then(i=>{p.textContent=i.pin;u.innerHTML=i.urls.length?i.urls.join('<br>'):'Sem rede detectada'})</script></html>

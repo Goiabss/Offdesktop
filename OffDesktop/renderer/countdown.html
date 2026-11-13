@@ -1,0 +1,17 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>OffDesktop</title>
+<style>
+body{margin:0;background:#0B0B0B;color:#fff;font-family:Segoe UI,system-ui,sans-serif;text-align:center;padding:28px 16px}
+p{margin:0 0 10px;color:#8A8A8A;font-size:14px}
+#t{font-size:52px;color:#FFD400;font-weight:600;margin:6px 0 22px}
+button{background:none;border:1px solid #333;color:#fff;border-radius:8px;padding:10px 28px;font-size:14px;cursor:pointer}
+button:hover{border-color:#FFD400}
+</style>
+<p id="msg">O computador será desligado em</p><div id="t">--:--:--</div>
+<button onclick="off.cancel()">Cancelar</button>
+<script>
+const f=n=>String(n).padStart(2,'0');
+off.onTick(s=>{
+  if(s<=10){msg.textContent='Desligando em instantes. Salve o que estiver aberto.';t.textContent=s;}
+  else{msg.textContent='O computador será desligado em';t.textContent=`${f(Math.floor(s/3600))}:${f(Math.floor(s%3600/60))}:${f(s%60)}`;}
+});
+</script></html>
