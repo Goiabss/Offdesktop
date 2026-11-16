@@ -1,8 +1,5 @@
 name: Gerar instaladores
-on:
-  workflow_dispatch:
-  push:
-    tags: ['v*']
+on: workflow_dispatch
 
 jobs:
   windows:
@@ -15,7 +12,7 @@ jobs:
       - run: npx electron-builder --win --publish never
       - uses: actions/upload-artifact@v4
         with:
-          name: OffDesktop-PC-instalador
+          name: pc
           path: dist/*.exe
 
   android:
@@ -27,12 +24,16 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - name: Montar app Android
-        working-directory: mobile
         run: |
-          npm install
-          mkdir -p www
+          mkdir -p mobile/www
+          cd mobile
+          echo '{"name":"offdesktop-mobile","version":"1.0.0","dependencies":{"@capacitor/android":"^6.1.0","@capacitor/core":"^6.1.0"},"devDependencies":{"@capacitor/cli":"^6.1.0"}}' > package.json
+          echo '{"appId":"com.offdesktop.mobile","appName":"OffDesktop","webDir":"www","server":{"androidScheme":"http","cleartext":true}}' > capacitor.config.json
           cp ../public/index.html ../public/manifest.json www/
+          npm install
           npx cap add android
+          M=android/app/src/main/AndroidManifest.xml
+          grep -q usesCleartextTraffic $M || sed -i 's/<application/<application android:usesCleartextTraffic="true"/' $M
           npx cap sync android
       - name: Compilar APK
         working-directory: mobile/android
@@ -40,5 +41,20 @@ jobs:
       - run: cp mobile/android/app/build/outputs/apk/debug/app-debug.apk OffDesktop.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: OffDesktop-Celular-apk
+          name: celular
           path: OffDesktop.apk
+
+  publicar:
+    needs: [windows, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: arquivos
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          files: arquivos/*
