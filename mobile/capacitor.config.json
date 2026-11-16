@@ -1,0 +1,6 @@
+{
+  "appId": "com.offdesktop.mobile",
+  "appName": "OffDesktop",
+  "webDir": "www",
+  "server": { "androidScheme": "http", "cleartext": true }
+}
